@@ -2,10 +2,11 @@
 
 import { VideoIcon, X } from "lucide-react";
 
-import { ChatPlaceholder } from "@/components/home/chat-placeholder";
-import { MessageContainer } from "@/components/home/message-container";
-import { MessageInput } from "@/components/home/message-input";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+
+import { ChatPlaceholder } from "./chat-placeholder";
+import { MessageContainer } from "./message-container";
+import { MessageInput } from "./message-input";
 
 export const RightPanel = () => {
   const selectedConversation = true;

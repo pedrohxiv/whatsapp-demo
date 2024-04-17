@@ -1,16 +1,18 @@
-import { ListFilter, LogOut, MessageSquare, Search, User } from "lucide-react";
+import { UserButton } from "@clerk/nextjs";
+import { ListFilter, LogOut, MessageSquare, Search } from "lucide-react";
 
-import { Conversation } from "@/components/home/conversation";
 import { ThemeSwitch } from "@/components/theme-switch";
 import { Input } from "@/components/ui/input";
 import { conversations } from "@/lib/data";
+
+import { Conversation } from "./conversation";
 
 export const LeftPanel = () => {
   return (
     <div className="w-1/4 border-gray-600 border-r">
       <div className="sticky top-0 bg-left-panel z-10">
         <div className="flex justify-between bg-gray-primary p-3 items-center">
-          <User className="h-6 w-6" />
+          <UserButton />
           <div className="flex items-center gap-3">
             <MessageSquare className="h-5 w-5" />
             <ThemeSwitch />

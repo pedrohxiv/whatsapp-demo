@@ -1,5 +1,6 @@
-import { ChatBubble } from "@/components/home/chat-bubble";
 import { messages } from "@/lib/data";
+
+import { ChatBubble } from "./chat-bubble";
 
 export const MessageContainer = () => {
   return (
