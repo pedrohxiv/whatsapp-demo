@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 
+import { Toaster } from "@/components/ui/toaster";
 import { ConvexClientProvider } from "@/providers/convex-client-provider";
 import { ThemeProvider } from "@/providers/theme-provider";
 
@@ -28,6 +29,7 @@ const RootLayout = ({ children }: RootLayoutProps) => {
             disableTransitionOnChange
           >
             {children}
+            <Toaster />
           </ThemeProvider>
         </ConvexClientProvider>
       </body>

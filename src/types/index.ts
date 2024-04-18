@@ -5,13 +5,24 @@ export type ConversationType = {
   groupName: string | null;
   participants: string[];
   _creationTime: number;
-  lastMessage: {
-    _id: string;
-    messageType: string;
-    content: string;
-    sender: string;
-  };
+  lastMessage: MessageType;
   sender: string;
-  isGroup: boolean
+  isGroup: boolean;
+  isOnline: boolean;
+};
+
+export type MessageType = {
+  _id: string;
+  content: string;
+  sender: string;
+  messageType: string;
+};
+
+export type UserType = {
+  _id: string;
+  name: string;
+  email: string;
+  image: string;
+  admin?: boolean;
   isOnline: boolean;
 };
