@@ -2,13 +2,14 @@ import { CheckCheck, ImageIcon, Users, VideoIcon } from "lucide-react";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { formatDate } from "@/lib/utils";
-import { ConversationType } from "@/types";
+import { ConversationType, UserType } from "@/types";
 
 interface ConversationProps {
   conversation: ConversationType;
+  me: UserType | undefined;
 }
 
-export const Conversation = ({ conversation }: ConversationProps) => {
+export const Conversation = ({ conversation, me }: ConversationProps) => {
   return (
     <>
       <div className="flex gap-2 items-center p-3 hover:bg-chat-hover cursor-pointer">
@@ -17,7 +18,11 @@ export const Conversation = ({ conversation }: ConversationProps) => {
             <div className="absolute top-0 right-0 z-10 w-2.5 h-2.5 bg-green-500 rounded-full border-2 border-foreground"></div>
           )}
           <AvatarImage
-            src={conversation.groupImage || "/placeholder.svg"}
+            src={
+              conversation.groupImage ||
+              conversation.image ||
+              "/placeholder.svg"
+            }
             className="object-cover rounded-full"
           />
           <AvatarFallback>
@@ -27,19 +32,19 @@ export const Conversation = ({ conversation }: ConversationProps) => {
         <div className="w-full">
           <div className="flex text-center">
             <h3 className="text-xs lg:text-sm font-bold">
-              {conversation.groupName || "Private Chat"}
+              {conversation.groupName || conversation.name}
             </h3>
             <span className="text-[10px] lg:text-xs text-gray-500 ml-auto">
               {formatDate(conversation._creationTime)}
             </span>
           </div>
           <p className="text-[12px] mt-1 text-gray-500 flex items-center gap-1">
-            {conversation.lastMessage?.sender === { _id: "user1" }?._id && (
+            {conversation.lastMessage?.sender === me?._id && (
               <CheckCheck className="w-4 h-4" />
             )}
             {conversation.isGroup && <Users size={16} />}
             {!conversation.lastMessage && "Say Hi!"}
-            {conversation.lastMessage.messageType === "text" &&
+            {conversation.lastMessage?.messageType === "text" &&
             conversation.lastMessage?.content.length > 30 ? (
               <span className="text-xs">
                 {conversation.lastMessage?.content.slice(0, 30)}...
@@ -49,10 +54,10 @@ export const Conversation = ({ conversation }: ConversationProps) => {
                 {conversation.lastMessage?.content}
               </span>
             )}
-            {conversation.lastMessage.messageType === "image" && (
+            {conversation.lastMessage?.messageType === "image" && (
               <ImageIcon size={16} />
             )}
-            {conversation.lastMessage.messageType === "video" && (
+            {conversation.lastMessage?.messageType === "video" && (
               <VideoIcon size={16} />
             )}
           </p>

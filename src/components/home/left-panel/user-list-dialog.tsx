@@ -28,6 +28,8 @@ export const UserListDialog = () => {
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
   const [renderedImage, setRenderedImage] = useState<string>("");
 
+  const { toast } = useToast();
+
   const imageRef = useRef<HTMLInputElement>(null);
   const dialogCloseRef = useRef<HTMLButtonElement>(null);
 
@@ -35,8 +37,6 @@ export const UserListDialog = () => {
   const generateUploadUrl = useMutation(api.conversations.generateUploadUrl);
   const me = useQuery(api.users.getMe);
   const users = useQuery(api.users.getUsers);
-
-  const { toast } = useToast();
 
   const handleCreateConversation = async () => {
     if (selectedUsers.length === 0) {

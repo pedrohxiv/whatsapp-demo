@@ -1,28 +1,37 @@
+import { Id } from "../../convex/_generated/dataModel";
+
 export type ConversationType = {
-  _id: string;
-  admin: string | null;
-  groupImage: string | null;
-  groupName: string | null;
-  participants: string[];
-  _creationTime: number;
-  lastMessage: MessageType;
-  sender: string;
+  _id: Id<"conversations">;
+  tokenIdentifier?: string;
+  name?: string;
+  email?: string;
+  image?: string;
+  isOnline?: boolean;
+  lastMessage: MessageType | null;
   isGroup: boolean;
-  isOnline: boolean;
+  participants: Id<"users">[];
+  admin?: string;
+  groupName?: string;
+  groupImage?: string;
+  _creationTime: number;
 };
 
 export type MessageType = {
-  _id: string;
+  _id: Id<"messages">;
   content: string;
   sender: string;
-  messageType: string;
+  messageType: "image" | "text" | "video";
+  conversation: Id<"conversations">;
+  _creationTime: number;
 };
 
 export type UserType = {
-  _id: string;
-  name: string;
+  _id: Id<"users">;
+  tokenIdentifier: string;
+  name?: string | undefined;
   email: string;
   image: string;
-  admin?: boolean;
   isOnline: boolean;
+  admin?: boolean;
+  _creationTime: number;
 };

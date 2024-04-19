@@ -89,29 +89,36 @@ export const getUsers = query({
       throw new ConvexError("Unauthorized");
     }
 
-    const users = await ctx.db.query("users").collect();
+    const users = await ctx.db
+      .query("users")
+      .filter((q) =>
+        q.neq(q.field("tokenIdentifier"), identity.tokenIdentifier)
+      )
+      .collect();
 
     return users;
   },
 });
 
 export const getMe = query({
-	args: {},
-	handler: async (ctx, args) => {
-		const identity = await ctx.auth.getUserIdentity();
-		if (!identity) {
-			throw new ConvexError("Unauthorized");
-		}
+  handler: async (ctx) => {
+    const identity = await ctx.auth.getUserIdentity();
 
-		const user = await ctx.db
-			.query("users")
-			.withIndex("by_tokenIdentifier", (q) => q.eq("tokenIdentifier", identity.tokenIdentifier))
-			.unique();
+    if (!identity) {
+      throw new ConvexError("Unauthorized");
+    }
 
-		if (!user) {
-			throw new ConvexError("User not found");
-		}
+    const user = await ctx.db
+      .query("users")
+      .withIndex("by_tokenIdentifier", (q) =>
+        q.eq("tokenIdentifier", identity.tokenIdentifier)
+      )
+      .unique();
 
-		return user;
-	},
+    if (!user) {
+      throw new ConvexError("User not found");
+    }
+
+    return user;
+  },
 });

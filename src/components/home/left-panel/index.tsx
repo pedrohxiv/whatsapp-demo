@@ -1,18 +1,25 @@
 "use client";
 
 import { UserButton } from "@clerk/nextjs";
-import { useConvexAuth } from "convex/react";
+import { useConvexAuth, useQuery } from "convex/react";
 import { ListFilter, Search } from "lucide-react";
 
-import { ThemeSwitch } from "@/components/theme-switch";
 import { Input } from "@/components/ui/input";
-import { conversations } from "@/lib/data";
+
+import { api } from "../../../../convex/_generated/api";
 
 import { Conversation } from "./conversation";
+import { ThemeSwitch } from "./theme-switch";
 import { UserListDialog } from "./user-list-dialog";
 
 export const LeftPanel = () => {
   const { isAuthenticated } = useConvexAuth();
+
+  const conversations = useQuery(
+    api.conversations.getMyConversations,
+    isAuthenticated ? undefined : "skip"
+  );
+  const me = useQuery(api.users.getMe, isAuthenticated ? undefined : "skip");
 
   return (
     <div className="w-1/4 border-gray-600 border-r">
@@ -39,15 +46,19 @@ export const LeftPanel = () => {
         </div>
       </div>
       <div className="my-3 flex flex-col gap-0 max-h-[80%] overflow-auto">
-        {conversations.length === 0 && (
+        {conversations?.length === 0 && (
           <>
             <p className="text-center text-gray-500 text-sm mt-3">
               No conversations yet.
             </p>
           </>
         )}
-        {conversations.map((conversation) => (
-          <Conversation key={conversation._id} conversation={conversation} />
+        {conversations?.map((conversation) => (
+          <Conversation
+            key={conversation._id}
+            conversation={conversation}
+            me={me}
+          />
         ))}
       </div>
     </div>
