@@ -40,7 +40,11 @@ export const RightPanel = () => {
               <p>
                 {selectedConversation.groupName || selectedConversation.name}
               </p>
-              {selectedConversation.isGroup && <GroupMembersDialog />}
+              {selectedConversation.isGroup && (
+                <GroupMembersDialog
+                  selectedConversation={selectedConversation}
+                />
+              )}
             </div>
           </div>
           <div className="flex items-center gap-7 mr-5">

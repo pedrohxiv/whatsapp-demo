@@ -25,7 +25,7 @@ export const Conversation = ({ conversation, me }: ConversationProps) => {
       >
         <Avatar className="border border-gray-900 overflow-visible relative">
           {conversation.isOnline && (
-            <div className="absolute top-0 right-0 z-10 w-2.5 h-2.5 bg-green-500 rounded-full border-2 border-foreground"></div>
+            <div className="absolute top-0 right-0 z-10 w-2.5 h-2.5 bg-green-500 rounded-full border-2 border-foreground" />
           )}
           <AvatarImage
             src={

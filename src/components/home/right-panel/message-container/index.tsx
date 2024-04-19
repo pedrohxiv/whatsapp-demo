@@ -8,7 +8,7 @@ export const MessageContainer = () => {
       <div className="mx-12 flex flex-col gap-3 h-full">
         {messages.map((message, index) => (
           <div>
-            <ChatBubble key={message._id} />
+            <ChatBubble key={index} />
           </div>
         ))}
       </div>
