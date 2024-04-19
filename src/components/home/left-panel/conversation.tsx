@@ -1,7 +1,8 @@
 import { CheckCheck, ImageIcon, Users, VideoIcon } from "lucide-react";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { formatDate } from "@/lib/utils";
+import { cn, formatDate } from "@/lib/utils";
+import { useConversationStore } from "@/store/chat-store";
 import { ConversationType, UserType } from "@/types";
 
 interface ConversationProps {
@@ -10,9 +11,18 @@ interface ConversationProps {
 }
 
 export const Conversation = ({ conversation, me }: ConversationProps) => {
+  const { selectedConversation, setSelectedConversation } =
+    useConversationStore();
+
   return (
     <>
-      <div className="flex gap-2 items-center p-3 hover:bg-chat-hover cursor-pointer">
+      <div
+        onClick={() => setSelectedConversation(conversation)}
+        className={cn(
+          "flex gap-2 items-center p-3 hover:bg-chat-hover cursor-pointer",
+          selectedConversation?._id === conversation._id && "bg-gray-tertiary"
+        )}
+      >
         <Avatar className="border border-gray-900 overflow-visible relative">
           {conversation.isOnline && (
             <div className="absolute top-0 right-0 z-10 w-2.5 h-2.5 bg-green-500 rounded-full border-2 border-foreground"></div>
