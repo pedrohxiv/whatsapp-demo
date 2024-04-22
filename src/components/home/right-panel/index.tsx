@@ -58,7 +58,7 @@ export const RightPanel = () => {
           </div>
         </div>
       </div>
-      <MessageContainer />
+      <MessageContainer selectedConversation={selectedConversation} />
       <MessageInput />
     </div>
   );
