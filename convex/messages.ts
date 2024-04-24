@@ -47,6 +47,54 @@ export const sendTextMessage = mutation({
   },
 });
 
+export const sendImage = mutation({
+  args: {
+    conversation: v.id("conversations"),
+    imageId: v.id("_storage"),
+    sender: v.id("users"),
+  },
+  handler: async (ctx, args) => {
+    const identity = await ctx.auth.getUserIdentity();
+
+    if (!identity) {
+      throw new ConvexError("Unauthorized");
+    }
+
+    const content = (await ctx.storage.getUrl(args.imageId)) as string;
+
+    await ctx.db.insert("messages", {
+      sender: args.sender,
+      content,
+      conversation: args.conversation,
+      messageType: "image",
+    });
+  },
+});
+
+export const sendVideo = mutation({
+  args: {
+    conversation: v.id("conversations"),
+    videoId: v.id("_storage"),
+    sender: v.id("users"),
+  },
+  handler: async (ctx, args) => {
+    const identity = await ctx.auth.getUserIdentity();
+
+    if (!identity) {
+      throw new ConvexError("Unauthorized");
+    }
+
+    const content = (await ctx.storage.getUrl(args.videoId)) as string;
+
+    await ctx.db.insert("messages", {
+      sender: args.sender,
+      content,
+      conversation: args.conversation,
+      messageType: "video",
+    });
+  },
+});
+
 export const getMessages = query({
   args: {
     conversation: v.id("conversations"),

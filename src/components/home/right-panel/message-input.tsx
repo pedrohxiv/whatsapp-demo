@@ -1,6 +1,6 @@
 import { useMutation, useQuery } from "convex/react";
 import EmojiPicker, { Theme } from "emoji-picker-react";
-import { Laugh, Mic, Plus, Send } from "lucide-react";
+import { Laugh, Mic, Send } from "lucide-react";
 import { useState } from "react";
 
 import { Button } from "@/components/ui/button";
@@ -10,6 +10,8 @@ import { useComponentVisible } from "@/hooks/use-component-visible";
 import { useConversationStore } from "@/store/chat-store";
 
 import { api } from "../../../../convex/_generated/api";
+
+import { MediaDropdown } from "./media-dropdown";
 
 export const MessageInput = () => {
   const [message, setMessage] = useState("");
@@ -69,7 +71,7 @@ export const MessageInput = () => {
           )}
           <Laugh className="text-gray-600 dark:text-gray-400" />
         </div>
-        <Plus className="text-gray-600 dark:text-gray-400" />
+        <MediaDropdown />
       </div>
       <form onSubmit={handleSendTextMessage} className="w-full flex gap-3">
         <div className="flex-1">

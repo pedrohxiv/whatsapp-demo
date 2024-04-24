@@ -17,6 +17,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/components/ui/use-toast";
 import { cn } from "@/lib/utils";
+import { useConversationStore } from "@/store/chat-store";
 
 import { api } from "../../../../convex/_generated/api";
 import { Id } from "../../../../convex/_generated/dataModel";
@@ -29,6 +30,7 @@ export const UserListDialog = () => {
   const [renderedImage, setRenderedImage] = useState<string>("");
 
   const { toast } = useToast();
+  const { setSelectedConversation } = useConversationStore();
 
   const imageRef = useRef<HTMLInputElement>(null);
   const dialogCloseRef = useRef<HTMLButtonElement>(null);
@@ -39,7 +41,7 @@ export const UserListDialog = () => {
   const users = useQuery(api.users.getUsers);
 
   const handleCreateConversation = async () => {
-    if (selectedUsers.length === 0) {
+    if (selectedUsers.length === 0 || !me) {
       return;
     }
 
@@ -52,7 +54,7 @@ export const UserListDialog = () => {
 
       if (!isGroup) {
         conversationId = await createConversation({
-          participants: [...selectedUsers, me?._id!],
+          participants: [...selectedUsers, me._id],
           isGroup: false,
         });
       } else {
@@ -66,12 +68,12 @@ export const UserListDialog = () => {
 
         const { storageId } = await result.json();
 
-        await createConversation({
-          participants: [...selectedUsers, me?._id!],
+        conversationId = await createConversation({
+          participants: [...selectedUsers, me._id],
           groupName,
           groupImage: storageId,
           isGroup: true,
-          admin: me?._id!,
+          admin: me._id,
         });
       }
 
@@ -80,6 +82,18 @@ export const UserListDialog = () => {
       setSelectedUsers([]);
       setGroupName("");
       setSelectedImage(null);
+      setSelectedConversation({
+        _id: conversationId,
+        participants: selectedUsers,
+        isGroup,
+        image: isGroup
+          ? renderedImage
+          : users?.find((user) => user._id === selectedUsers[0])?.image,
+        name: isGroup
+          ? groupName
+          : users?.find((user) => user._id === selectedUsers[0])?.name,
+        admin: me._id,
+      });
     } catch (error) {
       toast({
         variant: "destructive",

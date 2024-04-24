@@ -7,13 +7,13 @@ export type ConversationType = {
   email?: string;
   image?: string;
   isOnline?: boolean;
-  lastMessage: MessageType | null;
+  lastMessage?: MessageType | null;
   isGroup: boolean;
   participants: Id<"users">[];
   admin?: string;
   groupName?: string;
   groupImage?: string;
-  _creationTime: number;
+  _creationTime?: number;
 };
 
 export type MessageType = {
