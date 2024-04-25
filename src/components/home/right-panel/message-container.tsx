@@ -1,5 +1,5 @@
-import { useQuery } from "convex/react";
-import { CheckCheck } from "lucide-react";
+import { useMutation, useQuery } from "convex/react";
+import { Ban, CheckCheck, LogOut } from "lucide-react";
 import Image from "next/image";
 import { Fragment, useState } from "react";
 import ReactPlayer from "react-player";
@@ -10,10 +10,22 @@ import {
   DialogContent,
   DialogDescription,
 } from "@/components/ui/dialog";
+import { useToast } from "@/components/ui/use-toast";
 import { cn, getRelativeDateTime, isSameDay } from "@/lib/utils";
+import { useConversationStore } from "@/store/chat-store";
 import { ConversationType } from "@/types";
 
 import { api } from "../../../../convex/_generated/api";
+import { Id } from "../../../../convex/_generated/dataModel";
+
+type Message = {
+  sender: {
+    _id: Id<"users">;
+    name: string;
+    image: string;
+    isOnline: boolean;
+  };
+};
 
 interface MessageContainerProps {
   selectedConversation: ConversationType;
@@ -24,10 +36,71 @@ export const MessageContainer = ({
 }: MessageContainerProps) => {
   const [open, setOpen] = useState("");
 
+  const { toast } = useToast();
+  const { setSelectedConversation } = useConversationStore();
+
+  const createConversation = useMutation(api.conversations.createConversation);
+  const kickUser = useMutation(api.conversations.kickUser);
   const messages = useQuery(api.messages.getMessages, {
     conversation: selectedConversation._id,
   });
   const me = useQuery(api.users.getMe);
+
+  const handleCreateConversation = async (message: Message) => {
+    if (!me) {
+      return;
+    }
+
+    try {
+      const conversationId = await createConversation({
+        participants: [me._id, message.sender._id],
+        isGroup: false,
+      });
+
+      setSelectedConversation({
+        _id: conversationId,
+        name: message.sender.name,
+        participants: [me._id, message.sender._id],
+        isGroup: false,
+        isOnline: message.sender.isOnline,
+        image: message.sender.image,
+      });
+    } catch (error) {
+      toast({
+        variant: "destructive",
+        title: "Uh oh! Something went wrong.",
+        description: "There was a problem to create the conversation.",
+      });
+
+      console.error(error);
+    }
+  };
+
+  const handleKickUser = async (e: React.MouseEvent, message: Message) => {
+    e.stopPropagation();
+
+    try {
+      await kickUser({
+        conversationId: selectedConversation._id,
+        userId: message.sender._id,
+      });
+
+      setSelectedConversation({
+        ...selectedConversation,
+        participants: selectedConversation.participants.filter(
+          (id) => id !== message.sender._id
+        ),
+      });
+    } catch (error) {
+      toast({
+        variant: "destructive",
+        title: "Uh oh! Something went wrong.",
+        description: "There was a problem to kick the user.",
+      });
+
+      console.error(error);
+    }
+  };
 
   return (
     <div className="relative p-3 flex-1 overflow-auto h-full bg-chat-tile-light dark:bg-chat-tile-dark overflow-x-hidden">
@@ -67,13 +140,33 @@ export const MessageContainer = ({
                   )}
                   <div
                     className={cn(
-                      "flex z-20 max-w-fit px-2 pt-1 rounded-md shadow-md relative",
+                      "flex flex-col z-20 px-2 pt-1 rounded-md shadow-md relative min-w-16",
                       message.sender._id === me?._id
                         ? "bg-green-chat"
                         : "bg-white dark:bg-gray-primary"
                     )}
                   >
                     <div className="absolute bg-white dark:bg-gray-primary top-0 -left-[4px] w-3 h-3 rounded-bl-full" />
+                    {selectedConversation.isGroup && (
+                      <div
+                        className="text-xs flex gap-4 my-2 justify-between font-bold cursor-pointer group"
+                        onClick={() => handleCreateConversation(message)}
+                      >
+                        {message.sender.name}
+                        {!selectedConversation.participants.includes(
+                          message.sender._id
+                        ) && <Ban className="h-4 w-4 text-red-500" />}
+                        {selectedConversation.participants.includes(
+                          message.sender._id
+                        ) &&
+                          selectedConversation?.admin === me?._id && (
+                            <LogOut
+                              className="h-4 w-4 text-red-500 opacity-0 group-hover:opacity-100"
+                              onClick={(e) => handleKickUser(e, message)}
+                            />
+                          )}
+                      </div>
+                    )}
                     {message.messageType === "text" &&
                       (/^(ftp|http|https):\/\/[^ "]+$/.test(message.content) ? (
                         <a
@@ -128,7 +221,7 @@ export const MessageContainer = ({
                         </DialogContent>
                       </Dialog>
                     )}
-                    <p className="text-[10px] mt-2 self-end flex gap-1 items-center pb-1">
+                    <p className="text-[10px] ml-auto self-end flex gap-1 items-center pb-1">
                       {`${new Date(message._creationTime).getHours().toString().padStart(2, "0")}:${new Date(message._creationTime).getHours().toString().padStart(2, "0")}`}
                     </p>
                   </div>

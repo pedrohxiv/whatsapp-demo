@@ -14,8 +14,6 @@ export const Conversation = ({ conversation, me }: ConversationProps) => {
   const { selectedConversation, setSelectedConversation } =
     useConversationStore();
 
-  console.log(conversation.lastMessage?.messageType);
-
   return (
     <>
       <div

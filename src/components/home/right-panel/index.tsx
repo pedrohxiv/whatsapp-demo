@@ -4,6 +4,7 @@ import { VideoIcon, X } from "lucide-react";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useConversationStore } from "@/store/chat-store";
+import { useConvexAuth } from "convex/react";
 
 import { ChatPlaceholder } from "./chat-placeholder";
 import { GroupMembersDialog } from "./group-members-dialog";
@@ -11,8 +12,13 @@ import { MessageContainer } from "./message-container";
 import { MessageInput } from "./message-input";
 
 export const RightPanel = () => {
+  const { isLoading } = useConvexAuth();
   const { selectedConversation, setSelectedConversation } =
     useConversationStore();
+
+  if (isLoading) {
+    return null;
+  }
 
   if (!selectedConversation) {
     return <ChatPlaceholder />;
