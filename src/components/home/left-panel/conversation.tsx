@@ -31,7 +31,7 @@ export const Conversation = ({ conversation, me }: ConversationProps) => {
             src={
               conversation.groupImage ||
               conversation.image ||
-              "/placeholder.svg"
+              "/placeholder.png"
             }
             className="object-cover rounded-full"
           />

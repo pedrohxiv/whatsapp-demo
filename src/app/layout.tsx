@@ -19,7 +19,7 @@ interface RootLayoutProps {
 
 const RootLayout = ({ children }: RootLayoutProps) => {
   return (
-    <html>
+    <html suppressHydrationWarning>
       <body className={font.className}>
         <ConvexClientProvider>
           <ThemeProvider

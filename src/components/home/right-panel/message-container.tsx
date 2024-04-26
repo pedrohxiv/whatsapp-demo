@@ -187,7 +187,7 @@ export const MessageContainer = ({
                         <Image
                           src={message.content}
                           fill
-                          sizes="100vw"
+                          sizes="(max-width: 100vw) 100vw, 250px"
                           className="cursor-pointer object-cover rounded"
                           alt="Image"
                           onClick={() => setOpen(message.content)}
@@ -213,7 +213,7 @@ export const MessageContainer = ({
                             <Image
                               src={open}
                               fill
-                              sizes="100vw"
+                              sizes="(max-width: 100vw) 100vw, 250px"
                               className="rounded-lg object-contain"
                               alt="Image"
                             />
@@ -273,7 +273,7 @@ export const MessageContainer = ({
                       <Image
                         src={message.content}
                         fill
-                        sizes="100vw"
+                        sizes="(max-width: 100vw) 100vw, 250px"
                         className="cursor-pointer object-cover rounded"
                         alt="Image"
                         onClick={() => setOpen(message.content)}
@@ -299,7 +299,7 @@ export const MessageContainer = ({
                           <Image
                             src={open}
                             fill
-                            sizes="100vw"
+                            sizes="(max-width: 100vw) 100vw, 250px"
                             className="rounded-lg object-contain"
                             alt="Image"
                           />
